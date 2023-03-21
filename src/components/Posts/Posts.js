@@ -19,7 +19,8 @@ const Posts = () => {
             <div className='posts-list'>
                 {posts && posts.map(p => (
                     <div className={s.postItem} key={p.id}>
-                        {p.title}
+                        <div>{p.id}</div>
+                        <div className={s.postItemTitle}>{p.title}</div>
                     </div>
                 ))}
             </div>

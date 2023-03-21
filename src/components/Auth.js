@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-function Registration() {
+function Auth() {
     const [email, setEmail] = useState('')
     const [emailError, setEmailError] = useState(false)
     const [password, setPassword] = useState('')
@@ -89,4 +89,4 @@ function Registration() {
     );
 }
 
-export default Registration;
+export default Auth;

@@ -1,4 +1,9 @@
 $color: teal;
 .postItem{
   color: $color;
+  display: flex;
+
+  &Title{
+    margin-left: 10px;
+  }
 }
