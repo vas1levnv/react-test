@@ -1,6 +1,18 @@
 import React, {useState} from 'react';
+import PropTypes from "prop-types";
 
-function Auth() {
+async function loginUser(credentials){
+    return fetch('http://localhost:8080/auth', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(credentials)
+    })
+        .then(data => data.json())
+}
+
+function Auth({setToken}) {
     const [email, setEmail] = useState('')
     const [emailError, setEmailError] = useState(false)
     const [password, setPassword] = useState('')
@@ -8,14 +20,13 @@ function Auth() {
     const [check, setCheck] = useState(false)
     const [checkError, setCheckError] = useState(false)
 
+
     const handleChangeEmail = (event) => {
         setEmail(event.target.value)
     }
-
     const handleChangePassword = (event) => {
         setPassword(event.target.value)
     }
-
     const handleChangeCheck = (event) => {
         if (event.target.checked) {
             setCheck(true)
@@ -23,9 +34,7 @@ function Auth() {
             setCheck(false)
         }
     }
-
-
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault()
         if (!email){
             setEmailError(true)
@@ -37,7 +46,10 @@ function Auth() {
             setCheckError(true)
         } else{
             setCheckError(false)
-            console.log('данные отправлены')
+           const token = await loginUser({
+               email, password
+           })
+            setToken(token)
            setEmail('')
            setPassword('')
            setCheck(false)
@@ -90,3 +102,7 @@ function Auth() {
 }
 
 export default Auth;
+
+Auth.propTypes = {
+    setToken: PropTypes.func.isRequired
+}
