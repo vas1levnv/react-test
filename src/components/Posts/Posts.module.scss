@@ -2,8 +2,11 @@ $color: teal;
 .postItem{
   color: $color;
   display: flex;
-
-  &Title{
-    margin-left: 10px;
-  }
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  border: 2px solid tomato;
+  padding: 10px;
+  margin-bottom: 10px;
+  text-align: center;
 }
