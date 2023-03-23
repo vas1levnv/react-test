@@ -1,13 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import s from './Posts.module.scss'
+import axios from "axios";
 
 const Posts = () => {
 
     const [posts, setPosts] = useState(null)
     useEffect(() => {
 
-        fetch('https://jsonplaceholder.typicode.com/posts?_limit=5')
-            .then(response => response.json())
+        axios.get('https://reqres.in/api/users',{
+        })
+            .then(response => response.data.data)
             .then(response => setPosts(response))
     }, [])
 
@@ -23,8 +25,8 @@ const Posts = () => {
                     <div className={s.postItem} key={p.id}>
                         <div>{p.id}</div>
                         <div>
-                            <div className={s.postItemTitle}>{p.title}</div>
-                            <div className={s.postItemBody}>{p.body}</div>
+                            <div className={s.postItemTitle}>{p.first_name}</div>
+                            <div className={s.postItemBody}>{p.last_name}</div>
                         </div>
                         <button onClick={() => removePost(p.id)}>Удалить</button>
                     </div>

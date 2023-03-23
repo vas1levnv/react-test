@@ -1,15 +1,17 @@
 import React, {useState} from 'react';
-import PropTypes from "prop-types";
 
-async function loginUser(credentials){
-    return fetch('http://localhost:8080/auth', {
+async function loginUser(data) {
+    return await fetch('https://reqres.in/api/login', {
         method: 'POST',
+        body: JSON.stringify(data),
         headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentials)
+            'Content-Type': 'application/json',
+        }
     })
         .then(data => data.json())
+        .catch((error) => {
+            console.log(error)
+        });
 }
 
 function Auth({setToken}) {
@@ -19,6 +21,7 @@ function Auth({setToken}) {
     const [passwordError, setPasswordError] = useState(false)
     const [check, setCheck] = useState(false)
     const [checkError, setCheckError] = useState(false)
+    const [isCorrectData, setIsCorrectData] = useState(false)
 
 
     const handleChangeEmail = (event) => {
@@ -36,32 +39,43 @@ function Auth({setToken}) {
     }
     const handleSubmit = async (event) => {
         event.preventDefault()
-        if (!email){
+        if (!email) {
             setEmailError(true)
-        } else if(!password){
+        } else if (!password) {
             setEmailError(false)
             setPasswordError(true)
-        } else if(!check){
+        } else if (!check) {
             setPasswordError(false)
             setCheckError(true)
-        } else{
+        } else {
             setCheckError(false)
-           const token = await loginUser({
-               email, password
-           })
-            setToken(token)
-           setEmail('')
-           setPassword('')
-           setCheck(false)
+
+
+            try {
+                const token = await loginUser({
+                    email, password
+                })
+                setToken(token)
+            } catch (e) {
+                setIsCorrectData(true)
+            }
+
+            setEmail('')
+            setPassword('')
+            setCheck(false)
         }
     }
 
     return (
-        <div>
+        <div className='container'>
             <h1 className="mt-3">Авторизация</h1>
+            <span>Чтобы авторизоваться введите <b>Email: eve.holt@reqres.in</b> и <b>Пароль: cityslicka</b></span>
+            {
+                isCorrectData ? <div className='text-danger'>Неправильный логин или пароль</div> : false
+            }
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                    {emailError ?   <div className="text-danger">Введие email</div> : false }
+                    {emailError ? <div className="text-danger">Введие email</div> : false}
                     <label htmlFor="exampleInputEmail1"
                            className="form-label"
                     >Email address</label>
@@ -75,7 +89,7 @@ function Auth({setToken}) {
                     <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
                 </div>
                 <div className="mb-3">
-                    {passwordError ?   <div className="text-danger">Введие пароль</div> : false }
+                    {passwordError ? <div className="text-danger">Введие пароль</div> : false}
                     <label htmlFor="exampleInputPassword1"
                            className="form-label">Password</label>
                     <input type="password"
@@ -86,7 +100,7 @@ function Auth({setToken}) {
                            id="exampleInputPassword1"/>
                 </div>
                 <div className="mb-3 form-check">
-                    {checkError ?   <div className="text-danger">Пожалуйста нажмите на галку</div> : false }
+                    {checkError ? <div className="text-danger">Пожалуйста нажмите на галку</div> : false}
                     <input type="checkbox"
                            checked={check}
                            onChange={handleChangeCheck}
@@ -95,14 +109,11 @@ function Auth({setToken}) {
                            htmlFor="exampleCheck1">Check me out</label>
                 </div>
                 <button type="submit"
-                        className="btn btn-primary">Submit</button>
+                        className="btn btn-primary">Submit
+                </button>
             </form>
         </div>
     );
 }
 
 export default Auth;
-
-Auth.propTypes = {
-    setToken: PropTypes.func.isRequired
-}
