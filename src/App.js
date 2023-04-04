@@ -1,26 +1,37 @@
-import Counter from "./components/Counter";
 import './styles/App.css'
-import PostItem from "./components/PostItem";
-import {useState} from "react";
+import {useMemo, useState} from "react";
 import PostList from "./components/PostList";
-import MyButton from "./components/UI/button/MyButton";
-import MyInput from "./components/UI/input/MyInput";
 import PostForm from "./components/PostForm";
+import MySelect from "./components/UI/select/MySelect";
+import MyInput from "./components/UI/input/MyInput";
+import PostFilter from "./components/PostFilter";
 
 function App() {
     const [posts, setPosts] = useState([
-        {id: 1, title: 'Javascript', body: 'Description'},
-        {id: 2, title: 'Javascript2', body: 'Description'},
-        {id: 3, title: 'Javascript3', body: 'Description'},
-        {id: 4, title: 'Javascript4', body: 'Description'},
-        {id: 5, title: 'Javascript5', body: 'Description'},
+        {id: 1, title: 'аа', body: 'ьь'},
+        {id: 2, title: 'оо', body: 'вв'},
+        {id: 3, title: 'кк', body: 'пп'},
+        {id: 4, title: 'нн', body: 'кк'},
+        {id: 5, title: 'йй', body: 'ее'},
     ])
 
+    const [filter, setFilter] = useState({sort: '', query: ''})
+
+    const sortedPosts = useMemo(() => {
+        console.log('function sortedPost')
+        if (filter.sort) {
+            return [...posts].sort((a, b) => a[filter.sort].localeCompare(b[filter.sort]))
+        }
+        return posts
+    }, [filter.sort, posts])
+
+    const sortedAndSearchedPosts = useMemo(() => {
+        return sortedPosts.filter(post => post.title.toLowerCase().includes(filter.query))
+    }, [filter.query, sortedPosts])
 
     const createPost = (newPost) => {
         setPosts([...posts, newPost])
     }
-
     const deletePost = (post) => {
         setPosts(posts.filter(p => p.id !== post.id))
     }
@@ -28,10 +39,12 @@ function App() {
     return (
         <div className="App">
             <PostForm create={createPost}/>
-            {posts.length ?
-                <PostList posts={posts} deletePost={deletePost} title={'Список постов'}/>
-                : <h1 style={{textAlign: "center"}}>Постов пока нет</h1>
-            }
+            <hr style={{margin: "15px 0"}}/>
+            <PostFilter
+                filter={filter}
+                setFilter={setFilter}
+            />
+            <PostList posts={sortedAndSearchedPosts} deletePost={deletePost} title={'Список постов'}/>
         </div>
     )
 }
