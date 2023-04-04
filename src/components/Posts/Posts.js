@@ -22,7 +22,7 @@ const Posts = () => {
         fetchPosts()
             .catch(console.error)
 
-    }, [])
+    }, [currentPage])
 
     if (totalUsers) {
         for (let i = 1; totalUsers + 1 > i; i++) {
@@ -34,10 +34,8 @@ const Posts = () => {
         setPosts(posts.filter((post) => post.id !== p))
     }
 
-    const onPageItem = (e) => {
-        console.log(e.target.innerText)
-        setCurrentPage(e.target.innerText)
-        fetchPosts().catch()
+    const onPageItem = (p) => {
+        setCurrentPage(p)
     }
 
     return (
@@ -58,7 +56,7 @@ const Posts = () => {
                 <ul className="pagination">
                     {/* <li className="page-item"><a className="page-link" href="#">Previous</a></li>*/}
                     {pages && pages.map(page => (
-                        <li key={page} onClick={onPageItem} className="page-item"><span
+                        <li key={page} onClick={()=>onPageItem(page)} className="page-item"><span
                             className="page-link">{page}</span></li>
                     ))}
 
